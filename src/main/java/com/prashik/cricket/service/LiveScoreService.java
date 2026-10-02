@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -19,6 +18,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 public class LiveScoreService {
+
     private final Map<String, Match> matches = new ConcurrentHashMap<>();
     private final List<SseEmitter> subscribers = new CopyOnWriteArrayList<>();
 
@@ -27,6 +27,7 @@ public class LiveScoreService {
     }
 
     private void seedMatches() {
+
         matches.put("ind-aus", new Match(
                 "ind-aus",
                 "India vs Australia",
@@ -48,10 +49,42 @@ public class LiveScoreService {
                         "Australia tightened the bowling in the final over."
                 ),
                 List.of(
-                        new PlayerPerformance("Rohit Sharma", "India", 42, 22, 0, 190.9, "Batter"),
-                        new PlayerPerformance("Suryakumar Yadav", "India", 31, 16, 0, 193.75, "Batter"),
-                        new PlayerPerformance("Pat Cummins", "Australia", 12, 9, 2, 133.3, "Bowler"),
-                        new PlayerPerformance("Adam Zampa", "Australia", 0, 0, 1, 0.0, "Bowler")
+                        new PlayerPerformance(
+                                "Rohit Sharma",
+                                "India",
+                                42,
+                                22,
+                                0,
+                                190.9,
+                                "Batter"
+                        ),
+                        new PlayerPerformance(
+                                "Suryakumar Yadav",
+                                "India",
+                                31,
+                                16,
+                                0,
+                                193.75,
+                                "Batter"
+                        ),
+                        new PlayerPerformance(
+                                "Pat Cummins",
+                                "Australia",
+                                12,
+                                9,
+                                2,
+                                133.3,
+                                "Bowler"
+                        ),
+                        new PlayerPerformance(
+                                "Adam Zampa",
+                                "Australia",
+                                0,
+                                0,
+                                1,
+                                0.0,
+                                "Bowler"
+                        )
                 )
         ));
 
@@ -76,10 +109,42 @@ public class LiveScoreService {
                         "The chase is still alive in the middle overs."
                 ),
                 List.of(
-                        new PlayerPerformance("Jos Buttler", "England", 58, 31, 0, 187.1, "Batter"),
-                        new PlayerPerformance("Ben Stokes", "England", 41, 24, 0, 170.8, "All-rounder"),
-                        new PlayerPerformance("Kagiso Rabada", "South Africa", 11, 8, 2, 137.5, "Bowler"),
-                        new PlayerPerformance("Tabraiz Shamsi", "South Africa", 0, 0, 1, 0.0, "Bowler")
+                        new PlayerPerformance(
+                                "Jos Buttler",
+                                "England",
+                                58,
+                                31,
+                                0,
+                                187.1,
+                                "Batter"
+                        ),
+                        new PlayerPerformance(
+                                "Ben Stokes",
+                                "England",
+                                41,
+                                24,
+                                0,
+                                170.8,
+                                "All-rounder"
+                        ),
+                        new PlayerPerformance(
+                                "Kagiso Rabada",
+                                "South Africa",
+                                11,
+                                8,
+                                2,
+                                137.5,
+                                "Bowler"
+                        ),
+                        new PlayerPerformance(
+                                "Tabraiz Shamsi",
+                                "South Africa",
+                                0,
+                                0,
+                                1,
+                                0.0,
+                                "Bowler"
+                        )
                 )
         ));
 
@@ -98,17 +163,48 @@ public class LiveScoreService {
                 0,
                 20,
                 0,
-                0,
                 List.of(
                         "Toss in a few minutes.",
                         "Ground conditions are ideal for brisk scoring.",
                         "Both teams are preparing for a high-intensity chase."
                 ),
                 List.of(
-                        new PlayerPerformance("Daryl Mitchell", "New Zealand", 0, 0, 0, 0.0, "Batter"),
-                        new PlayerPerformance("Rachin Ravindra", "New Zealand", 0, 0, 0, 0.0, "Batter"),
-                        new PlayerPerformance("Babar Azam", "Pakistan", 0, 0, 0, 0.0, "Batter"),
-                        new PlayerPerformance("Shaheen Afridi", "Pakistan", 0, 0, 0, 0.0, "Bowler")
+                        new PlayerPerformance(
+                                "Daryl Mitchell",
+                                "New Zealand",
+                                0,
+                                0,
+                                0,
+                                0.0,
+                                "Batter"
+                        ),
+                        new PlayerPerformance(
+                                "Rachin Ravindra",
+                                "New Zealand",
+                                0,
+                                0,
+                                0,
+                                0.0,
+                                "Batter"
+                        ),
+                        new PlayerPerformance(
+                                "Babar Azam",
+                                "Pakistan",
+                                0,
+                                0,
+                                0,
+                                0.0,
+                                "Batter"
+                        ),
+                        new PlayerPerformance(
+                                "Shaheen Afridi",
+                                "Pakistan",
+                                0,
+                                0,
+                                0,
+                                0.0,
+                                "Bowler"
+                        )
                 )
         ));
     }
@@ -122,14 +218,27 @@ public class LiveScoreService {
     }
 
     public MatchSummary getMatchSummary(String id) {
+
         Match match = matches.get(id);
+
         if (match == null) {
             return null;
         }
 
         String leader = match.getCurrentInnings();
-        String requiredRate = match.getRequiredRuns() > 0 ? (match.getRequiredRuns() / Math.max(1, match.getBalls() / 6.0)) + " rpo" : "-";
-        String runRate = match.getBalls() > 0 ? String.format("%.2f", (double) match.getTeamBScore() / (match.getBalls() / 6.0)) : "0.00";
+
+        String requiredRate = match.getRequiredRuns() > 0
+                ? (match.getRequiredRuns() /
+                Math.max(1, match.getBalls() / 6.0)) + " rpo"
+                : "-";
+
+        String runRate = match.getBalls() > 0
+                ? String.format(
+                        "%.2f",
+                        (double) match.getTeamBScore() /
+                                (match.getBalls() / 6.0)
+                )
+                : "0.00";
 
         return new MatchSummary(
                 match.getId(),
@@ -138,13 +247,17 @@ public class LiveScoreService {
                 requiredRate,
                 runRate,
                 match.getStatus(),
-                match.getLastUpdated().format(DateTimeFormatter.ofPattern("HH:mm:ss")),
+                match.getLastUpdated().format(
+                        DateTimeFormatter.ofPattern("HH:mm:ss")
+                ),
                 match.getRecentEvents()
         );
     }
 
     public SseEmitter subscribeToLiveUpdates() {
+
         SseEmitter emitter = new SseEmitter(60_000L);
+
         subscribers.add(emitter);
 
         emitter.onCompletion(() -> subscribers.remove(emitter));
@@ -152,7 +265,11 @@ public class LiveScoreService {
         emitter.onError((ex) -> subscribers.remove(emitter));
 
         try {
-            emitter.send(SseEmitter.event().name("connected").data("Connected to live updates"));
+            emitter.send(
+                    SseEmitter.event()
+                            .name("connected")
+                            .data("Connected to live updates")
+            );
         } catch (IOException e) {
             subscribers.remove(emitter);
         }
@@ -161,35 +278,82 @@ public class LiveScoreService {
     }
 
     public void simulateMatchTick() {
+
         for (Match match : matches.values()) {
+
             if ("Upcoming".equalsIgnoreCase(match.getStatus())) {
                 continue;
             }
 
             int run = ThreadLocalRandom.current().nextInt(0, 8);
-            boolean wicketFell = ThreadLocalRandom.current().nextInt(0, 10) > 7;
+
+            boolean wicketFell =
+                    ThreadLocalRandom.current().nextInt(0, 10) > 7;
+
             match.setBalls(match.getBalls() + 1);
             match.setLastUpdated(LocalDateTime.now());
 
             if (match.getCurrentInnings().equals(match.getTeamA())) {
-                match.setTeamAScore(match.getTeamAScore() + run);
+
+                match.setTeamAScore(
+                        match.getTeamAScore() + run
+                );
+
                 if (wicketFell && match.getTeamAWickets() < 10) {
-                    match.setTeamAWickets(match.getTeamAWickets() + 1);
+                    match.setTeamAWickets(
+                            match.getTeamAWickets() + 1
+                    );
                 }
-                match.setRequiredRuns(Math.max(0, match.getTarget() - match.getTeamAScore()));
-                match.addRecentEvent(run + " run(s) from " + match.getTeamA() + " in the chase.");
+
+                match.setRequiredRuns(
+                        Math.max(
+                                0,
+                                match.getTarget() -
+                                        match.getTeamAScore()
+                        )
+                );
+
+                match.addRecentEvent(
+                        run + " run(s) from " +
+                                match.getTeamA() +
+                                " in the chase."
+                );
+
             } else {
-                match.setTeamBScore(match.getTeamBScore() + run);
+
+                match.setTeamBScore(
+                        match.getTeamBScore() + run
+                );
+
                 if (wicketFell && match.getTeamBWickets() < 10) {
-                    match.setTeamBWickets(match.getTeamBWickets() + 1);
+                    match.setTeamBWickets(
+                            match.getTeamBWickets() + 1
+                    );
                 }
-                match.setRequiredRuns(Math.max(0, match.getTarget() - match.getTeamBScore()));
-                match.addRecentEvent(run + " run(s) from " + match.getTeamB() + " in the chase.");
+
+                match.setRequiredRuns(
+                        Math.max(
+                                0,
+                                match.getTarget() -
+                                        match.getTeamBScore()
+                        )
+                );
+
+                match.addRecentEvent(
+                        run + " run(s) from " +
+                                match.getTeamB() +
+                                " in the chase."
+                );
             }
 
-            if (match.getBalls() >= 20 && match.getStatus().equalsIgnoreCase("Live")) {
+            if (match.getBalls() >= 20 &&
+                    match.getStatus().equalsIgnoreCase("Live")) {
+
                 match.setStatus("Completed");
-                match.addRecentEvent("Match finished. Final score posted.");
+
+                match.addRecentEvent(
+                        "Match finished. Final score posted."
+                );
             }
 
             if (match.getTrackRunningScore() > match.getTarget()) {
@@ -201,10 +365,19 @@ public class LiveScoreService {
     }
 
     public void broadcastUpdates() {
+
         List<Match> payload = getAllMatches();
+
         for (SseEmitter emitter : subscribers) {
+
             try {
-                emitter.send(SseEmitter.event().name("match-update").data(payload));
+
+                emitter.send(
+                        SseEmitter.event()
+                                .name("match-update")
+                                .data(payload)
+                );
+
             } catch (IOException e) {
                 subscribers.remove(emitter);
             }
@@ -212,7 +385,9 @@ public class LiveScoreService {
     }
 
     public void addSampleMatch() {
+
         String id = "new-match-" + System.nanoTime();
+
         Match match = new Match(
                 id,
                 "India vs Bangladesh",
@@ -228,13 +403,33 @@ public class LiveScoreService {
                 9,
                 18,
                 21,
-                List.of("Live match started with aggressive intent."),
                 List.of(
-                        new PlayerPerformance("Shubman Gill", "India", 48, 31, 0, 154.8, "Batter"),
-                        new PlayerPerformance("Taskin Ahmed", "Bangladesh", 11, 8, 2, 137.5, "Bowler")
+                        "Live match started with aggressive intent."
+                ),
+                List.of(
+                        new PlayerPerformance(
+                                "Shubman Gill",
+                                "India",
+                                48,
+                                31,
+                                0,
+                                154.8,
+                                "Batter"
+                        ),
+                        new PlayerPerformance(
+                                "Taskin Ahmed",
+                                "Bangladesh",
+                                11,
+                                8,
+                                2,
+                                137.5,
+                                "Bowler"
+                        )
                 )
         );
+
         matches.put(id, match);
+
         broadcastUpdates();
     }
 }
